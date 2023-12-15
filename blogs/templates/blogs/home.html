@@ -1,0 +1,75 @@
+{#<!DOCTYPE html>#}
+{#<html>#}
+{#<head>#}
+{#    <title>Блог</title>#}
+{#	 <meta charset="UTF-8">#}
+{#    <title>{% block title %}Блог{% endblock %}</title>#}
+{#    {% bootstrap_css %}#}
+{#    {% bootstrap_javascript %}#}
+{#</head>#}
+{#<body>#}
+{#    <h1>Добро пожаловать в блог</h1>#}
+{#    {% if user.is_authenticated %}#}
+{#        <p>Вы вошли как {{ user.username }} (<a href="{% url 'user_logout' %}">Выход</a>)</p>#}
+{#		<a href="{% url 'create_post' %}">Создать новый пост</a>#}
+{#    {% else %}#}
+{#        <p><a href="{% url 'login' %}">Войти</a> или <a href="{% url 'register' %}">Зарегистрироваться</a></p>#}
+{#    {% endif %}#}
+{#    <ul>#}
+{##}
+{#       {% for post in blog_posts %}#}
+{#            <li>#}
+{#                <h2>{{ post.title }}</h2>#}
+{#                <p>{{ post.text }}</p>#}
+{#                <p>Автор: {{ post.author.username }}</p>#}
+{#                <p>Дата добавления: {{ post.date_added }}</p>#}
+{#			{% if user.is_authenticated and user == post.author %}#}
+{#                <a href="{% url 'edit_post' post.id %}">Редактировать запись</a>#}
+{#				<a href="{% url 'delete_post' post.id %}">Удалить запись</a>#}
+{##}
+{#            {% endif %}#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#</body>#}
+{#</html>#}
+
+{% extends "blogs/base.html" %}
+
+{% block content %}
+	<div class="alert alert-secondary text-center" role="alert">
+		<h1 class="display-6">Добро пожаловать в блог</h1>
+	</div>
+
+    {% if user.is_authenticated %}
+    <div class="alert alert-success d-flex justify-content-between align-items-center">
+        <p class="mb-0">Вы вошли как <strong>{{ user.username }}</strong></p>
+        <a href="{% url 'user_logout' %}" class="btn btn-danger btn-sm">Выход</a>
+    </div>
+		<a href="{% url 'create_post' %}" class="btn btn-success btn-lg mb-3 btn-block">Создать новую запись</a>
+{% else %}
+    <div class="alert alert-info">
+        <p class="mb-0">
+            <a href="{% url 'login' %}" class="btn btn-primary btn-sm mr-2">Войти</a>
+            <a href="{% url 'register' %}" class="btn btn-primary btn-sm ml-2">Зарегистрироваться</a>
+        </p>
+    </div>
+{% endif %}
+
+
+    <ul class="list-group">
+        {% for post in blog_posts %}
+            <li class="list-group-item">
+                <h2>{{ post.title }}</h2>
+                <p>{{ post.text }}</p>
+                <p>Автор: {{ post.author.username }}</p>
+                <p>Дата добавления: {{ post.date_added }}</p>
+                {% if user.is_authenticated and user == post.author %}
+                    <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-warning">Редактировать запись</a>
+                    <a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-danger">Удалить запись</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
